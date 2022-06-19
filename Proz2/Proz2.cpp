@@ -2,6 +2,7 @@
 //
 const int blocks = 2;
 const int matrix_size = 1024 * blocks;
+const int calc_nums = 30;
 #include <iostream>
 #include <iomanip>
 #include <omp.h>
@@ -82,20 +83,25 @@ void CalculateMatrix(int* A, int* B,
             for (int j = 0; j < matrix_size; j++)
             {
                 C[i*matrix_size + j] += A[i* matrix_size + k] * B[k* matrix_size + j];
-                //std::cout << "|";
             }
 }
 
-//void CalculateMatrixDynamic(int** A, int** B, int** C, int size)
-//{
-//    #pragma omp parallel for
-//    for (int i = 0; i < size; i++)
-//        for (int k = 0; k < size; k++)
-//            for (int j = 0; j < size; j++)
-//            {
-//                C[i][j] += A[i][k] * B[k][j];
-//            }
-//}
+void CalculateMatrixNTimes(int* A, int* B,
+    int* C,int n)
+{
+#pragma omp parallel
+    {
+    for(int i = 0;i<n;i++)
+        #pragma omp for
+            for (int i = 0; i < matrix_size; i++)
+                for (int k = 0; k < matrix_size; k++)
+                    for (int j = 0; j < matrix_size; j++)
+                    {
+                        C[i * matrix_size + j] += A[i * matrix_size + k] * B[k * matrix_size + j];
+                    }
+    }
+}
+
 
 int main()
 {
@@ -116,8 +122,10 @@ int main()
     sswtime = omp_get_wtime();
     spstart = clock();
 
+    //for(int i = 0 ; i<calc_nums;i++)
+    //    CalculateMatrix(A, B, C);
 
-    CalculateMatrix(A, B, C);
+    CalculateMatrixNTimes(A, B, C, calc_nums);
 
     spstop = clock();
     sewtime = omp_get_wtime();
