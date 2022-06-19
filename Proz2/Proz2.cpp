@@ -1,8 +1,8 @@
 ﻿// Proz2.cpp : Ten plik zawiera funkcję „main”. W nim rozpoczyna się i kończy wykonywanie programu.
 //
-const int blocks = 2;
+const int blocks = 1;
 const int matrix_size = 1024 * blocks;
-const int calc_nums = 30;
+const int calc_nums = 2;
 #include <iostream>
 #include <iomanip>
 #include <omp.h>
@@ -91,7 +91,7 @@ void CalculateMatrixNTimes(int* A, int* B,
 {
 #pragma omp parallel
     {
-    for(int i = 0;i<n;i++)
+    for(int z = 0;z<n;z++)
         #pragma omp for
             for (int i = 0; i < matrix_size; i++)
                 for (int k = 0; k < matrix_size; k++)
